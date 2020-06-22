@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" type="text/css" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css">
+</head>
+<body>
+  
+<div class="container">
+
+  <form id="frm-example"  method="POST">
+    <p><b>Selected Row data</b></p>
+    <pre id="example-console-rows"></pre>
+    <p><b>data submit on the server</b></p>
+    <pre id="example-console-form"></pre>
+    <p><button class="btn btn-danger">View selected</button></p> 
+  
+
+
+
+  <table id="example" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+         <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+    </table>
+    </form>
+</div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><!-- 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="http://gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+       var table = $('#example').DataTable({
+          'ajax': 'https://gyrocode.github.io/files/jquery-datatables/arrays_id.json',
+          'columnDefs': [
+             {
+                'targets': 0,
+                'checkboxes': {
+                   'selectRow': true
+                }
+             }
+          ],
+          'select': {
+             'style': 'multi'
+          },
+          'order': [[1, 'asc']]
+       });
+
+       // Handle form submission event 
+   $('#frm-example').on('submit', function(e){
+      var form = this;
+      
+      var rows_selected = table.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+         // Create a hidden element 
+         $(form).append(
+             $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'id[]')
+                .val(rowId)
+         );
+      });
+
+      // FOR DEMONSTRATION ONLY
+      // The code below is not needed in production
+      
+      // Output form data to a console     
+      $('#example-console-rows').text(rows_selected.join(","));
+      
+      // Output form data to a console     
+      $('#example-console-form').text($(form).serialize());
+       
+      // Remove added elements
+      $('input[name="id\[\]"]', form).remove();
+       
+      // Prevent actual form submission
+      e.preventDefault();
+   });  
+
+
+    });
+  </script>
+</body>
+</html>
